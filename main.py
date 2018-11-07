@@ -1,12 +1,15 @@
 import numpy as np
+np.random.seed(1)
 
 class Neural_Network(object):
     def __init__(self):
         self.inputSize = 1000
-        self.hiddenSize = 10
+        self.hiddenSize = 15
         self.W1 = np.random.randn(self.inputSize, self.hiddenSize) #Input weights
         self.W2 = np.random.randn(self.hiddenSize, 1) #Hidden layor weights
-
+        #self.W2 = np.array([x / 20 for x in self.W2])
+        #self.W1 = np.array([x / 20 for x in self.W1])
+    
     def sigmoid(self, s):
         return (2/(1+np.exp(-2*s)))-1
 
@@ -34,13 +37,11 @@ class Neural_Network(object):
         output = self.forward(data)
         self.backward(data, labels, output)
 
-    #def test(self, data, lebels):
 
 
 def parse(trainFile, labelFile):
     dataset = []
     labels = []
-    np.random.seed(1)
     with open(trainFile) as f:
         lines = f.readlines()
         for i in lines:
@@ -64,7 +65,30 @@ def parse(trainFile, labelFile):
     label = np.array(labels, dtype=np.float64)
     return data, label
 
+def testParse(trainFile, labelFile):
+    dataset = []
+    labels = []
+    with open(trainFile) as f:
+        lines = f.readlines()
+        for i in lines:
+            dataset.append(i.split())
 
+    for i in range(0, len(dataset)):
+        for x in range(0,len(dataset[i])):
+            dataset[i][x] = float(dataset[i][x])
+    i = 0
+    lines = []
+    with open(labelFile) as f:
+        lines = f.readlines()
+        lines = lines[0][1:]
+        lines = lines[:-1]
+        lines = [x.strip() for x in lines.split(',')]
+        for line in lines:
+            labels.append(line)
+
+    data= np.array(dataset, dtype=np.float64)
+    label = np.array(labels, dtype=np.float64)
+    return data, label
 
 
 data, label = parse("train.txt", "label.txt")
@@ -75,24 +99,16 @@ NN = Neural_Network()
 
 for i in range(0,15): 
     #print(np.array(list(zip( label, NN.forward(data)))))
-    print("Epoch " + str(i))
+    print("Epoch " + str(i + 1))
     print ("Loss: " + str(np.mean(np.square(label - NN.forward(data))))) 
     print("\n")
     NN.train(data, label)
 
 
-<<<<<<< HEAD
 right = 0
 wrong = 0
 
-data, label = parse("a2-test-data.txt", "a2-test-label.txt")
-=======
-NN = Neural_Network()
-for i in range(0,15): # trains the NN 1,000 times
-    print ("Loss: \n" + str(np.mean(np.square(label - NN.forward(data))))) # mean sum squared loss
-    print ("\n")
-    NN.train(data, label)
->>>>>>> 8f4dfcfc34d79e05899822dae887664d2f2cade2
+data, label = testParse("a2-test-data.txt", "a2-test-label.txt")
 
 predictions = NN.forward(data)
 
