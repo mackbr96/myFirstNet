@@ -4,7 +4,7 @@ np.random.seed(1)
 class Neural_Network(object):
     def __init__(self):
         self.inputSize = 1000
-        self.hiddenSize = 15
+        self.hiddenSize = 10
         self.W1 = np.random.randn(self.inputSize, self.hiddenSize) #Input weights
         self.W2 = np.random.randn(self.hiddenSize, 1) #Hidden layor weights
         #self.W2 = np.array([x / 20 for x in self.W2])
@@ -31,7 +31,10 @@ class Neural_Network(object):
         self.z2_delta = np.multiply(self.z2_error,self.sigmoidPrime(self.y1)) 
 
         self.W1 += np.dot(inputs.T, self.z2_delta) 
-        self.W2 += np.dot(self.y1.T, self.outPut_delta) 
+        self.W2 += np.dot(self.y1.T, self.outPut_delta)
+        
+        #self.W1 = np.subtract(self.W1, (np.multiply(self.W1, self.z2_delta))
+        #self.W2 = np.subtract(self.W2, self.outPut_delta)
     
     def train (self, data, labels):
         output = self.forward(data)
@@ -47,20 +50,12 @@ def parse(trainFile, labelFile):
         for i in lines:
             dataset.append(i.split())
 
-    for i in range(0, len(dataset)):
-        for x in range(0,len(dataset[i])):
-            dataset[i][x] = float(dataset[i][x])
-    i = 0
     lines = []
     with open(labelFile) as f:
         lines = f.readlines()
         for line in lines:
             labels.append(line.split())
-            i += 1
-    for i in range(0, len(labels)):
-        for x in range(0,len(labels[i])):
-            dataset[i][x] = float(labels[i][x])
-
+   
     data= np.array(dataset, dtype=np.float64)
     label = np.array(labels, dtype=np.float64)
     return data, label
@@ -73,10 +68,6 @@ def testParse(trainFile, labelFile):
         for i in lines:
             dataset.append(i.split())
 
-    for i in range(0, len(dataset)):
-        for x in range(0,len(dataset[i])):
-            dataset[i][x] = float(dataset[i][x])
-    i = 0
     lines = []
     with open(labelFile) as f:
         lines = f.readlines()
@@ -117,7 +108,9 @@ for i in range(0, len(label)):
         right += 1
     else:
         wrong += 1
+print(np.array(list(zip( label, NN.forward(data)))))
 print("Right: " + str(right))
 print("Wrong: " + str(wrong))
 
-
+np.savetxt("W1.txt", NN.W1)
+np.savetxt("W2.txt", NN.W2)
