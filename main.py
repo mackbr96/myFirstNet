@@ -22,7 +22,7 @@ class Neural_Network(object):
         return o.astype(float)
 
     def sigmoid(self, s):
-        return 1/(1+np.exp(-s))
+        return (2/(1+np.exp(-2*s)))-1
 
     def sigmoidPrime(self, s):
         return 1- np.square(self.sigmoid(s))
@@ -70,22 +70,7 @@ label = np.array(labels, dtype=np.float128)
 
 
 NN = Neural_Network()
-test = True
-for i in range(0,2000): # trains the NN 1,000 times
-    predictedOutPut = NN.forward(data)
-    test = True
-    for i in range(0, len(labels)):
-        if float(label[i]) != float(predictedOutPut[i]):
-            test = False
-            print(i)
-            break
-        if(test):
-            print("FUCK YES")
-            exit()
-    # print ("Input: \n" + str(data) )
-    # print ("Actual Output: \n" + str(label) )
-    # print ("Predicted Output: \n" + str(NN.forward(data))) 
-    # print(np.array(list(zip( label, NN.forward(data)))))
+for i in range(0,15): # trains the NN 1,000 times
     print ("Loss: \n" + str(np.mean(np.square(label - NN.forward(data))))) # mean sum squared loss
     print ("\n")
     NN.train(data, label)
