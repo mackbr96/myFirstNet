@@ -81,10 +81,18 @@ for i in range(0,15):
     NN.train(data, label)
 
 
+<<<<<<< HEAD
 right = 0
 wrong = 0
 
 data, label = parse("a2-test-data.txt", "a2-test-label.txt")
+=======
+NN = Neural_Network()
+for i in range(0,15): # trains the NN 1,000 times
+    print ("Loss: \n" + str(np.mean(np.square(label - NN.forward(data))))) # mean sum squared loss
+    print ("\n")
+    NN.train(data, label)
+>>>>>>> 8f4dfcfc34d79e05899822dae887664d2f2cade2
 
 predictions = NN.forward(data)
 
