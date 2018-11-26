@@ -9,7 +9,7 @@ class Neural_Network(object):
         self.W2 = np.random.randn(self.hiddenSize, 1) #Hidden layor weights
         #self.W2 = np.array([x / 20 for x in self.W2])
         #self.W1 = np.array([x / 20 for x in self.W1])
-    
+
     def sigmoid(self, s):
         return (2/(1+np.exp(-2*s)))-1
 
@@ -17,30 +17,28 @@ class Neural_Network(object):
         return 1- np.square(self.sigmoid(s))
 
     def forward(self, inputs):
-        self.z = np.dot(inputs, self.W1) 
-        self.y1 = self.sigmoid(self.z) 
-        self.z2 = np.dot(self.y1, self.W2) 
-        output = self.sigmoid(self.z2) 
+        self.z = np.dot(inputs, self.W1)
+        self.y1 = self.sigmoid(self.z)
+        self.z2 = np.dot(self.y1, self.W2)
+        output = self.sigmoid(self.z2)
         return output.astype(float)
 
     def backward(self, inputs, labels, output):
         self.outPut_error = np.subtract(labels,output)
-        self.outPut_delta = np.multiply(self.outPut_error,self.sigmoidPrime(output)) 
+        self.outPut_delta = np.multiply(self.outPut_error,self.sigmoidPrime(output))
 
-        self.z2_error = np.dot(self.outPut_delta, self.W2.T) 
-        self.z2_delta = np.multiply(self.z2_error,self.sigmoidPrime(self.y1)) 
+        self.z2_error = np.dot(self.outPut_delta, self.W2.T)
+        self.z2_delta = np.multiply(self.z2_error,self.sigmoidPrime(self.y1))
 
-        self.W1 += np.dot(inputs.T, self.z2_delta) 
+        self.W1 += np.dot(inputs.T, self.z2_delta)
         self.W2 += np.dot(self.y1.T, self.outPut_delta)
-        
+
         #self.W1 = np.subtract(self.W1, (np.multiply(self.W1, self.z2_delta))
         #self.W2 = np.subtract(self.W2, self.outPut_delta)
-    
+
     def train (self, data, labels):
         output = self.forward(data)
         self.backward(data, labels, output)
-
-
 
 def parse(trainFile, labelFile):
     dataset = []
@@ -55,7 +53,7 @@ def parse(trainFile, labelFile):
         lines = f.readlines()
         for line in lines:
             labels.append(line.split())
-   
+
     data= np.array(dataset, dtype=np.float64)
     label = np.array(labels, dtype=np.float64)
     return data, label
@@ -77,24 +75,21 @@ def testParse(trainFile, labelFile):
         for line in lines:
             labels.append(line)
 
-    data= np.array(dataset, dtype=np.float64)
+    data = np.array(dataset, dtype=np.float64)
     label = np.array(labels, dtype=np.float64)
     return data, label
 
 
 data, label = parse("train.txt", "label.txt")
 
-
-
 NN = Neural_Network()
 
-for i in range(0,15): 
+for i in range(0,20):
     #print(np.array(list(zip( label, NN.forward(data)))))
     print("Epoch " + str(i + 1))
-    print ("Loss: " + str(np.mean(np.square(label - NN.forward(data))))) 
+    print ("Loss: " + str(np.mean(np.square(label - NN.forward(data)))))
     print("\n")
     NN.train(data, label)
-
 
 right = 0
 wrong = 0
@@ -108,7 +103,7 @@ for i in range(0, len(label)):
         right += 1
     else:
         wrong += 1
-print(np.array(list(zip( label, NN.forward(data)))))
+#print(np.array(list(zip( label, NN.forward(data)))))
 print("Right: " + str(right))
 print("Wrong: " + str(wrong))
 
